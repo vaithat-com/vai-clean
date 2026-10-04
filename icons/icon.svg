@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Background Gradient: Electric Blue into Deep Cyber Slate -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="40%" stop-color="#0369a1" />
+      <stop offset="85%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+
+    <!-- Glowing Cyber Rim Border -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#2dd4bf" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+
+    <!-- Center Radial Glow -->
+    <radialGradient id="centerAura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- RGB Gaming RAM Lightbar (Vivid Neon) -->
+    <linearGradient id="rgbBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f2fe" />
+      <stop offset="25%" stop-color="#38bdf8" />
+      <stop offset="55%" stop-color="#818cf8" />
+      <stop offset="80%" stop-color="#c084fc" />
+      <stop offset="100%" stop-color="#f43f5e" />
+    </linearGradient>
+
+    <!-- RAM Heatspreader Metallic Plating -->
+    <linearGradient id="spreaderGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="35%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0b1329" />
+    </linearGradient>
+
+    <!-- Ultra-Luminous Gold Contact Pins -->
+    <linearGradient id="goldPins" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#fef08a" />
+      <stop offset="60%" stop-color="#facc15" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+
+    <!-- Electric Lightning Bolt Gradient -->
+    <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="20%" stop-color="#fef08a" />
+      <stop offset="60%" stop-color="#facc15" />
+      <stop offset="100%" stop-color="#ea580c" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. Background Rounded Container with High-Contrast Neon Border -->
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="2.8" />
+
+  <!-- 2. Ambient Center Glow -->
+  <circle cx="64" cy="64" r="50" fill="url(#centerAura)" />
+
+  <!-- 3. Stylized Gaming RAM Module (Centered horizontally & vertically) -->
+  <!-- RAM PCB Dark Emerald Substrate -->
+  <rect x="12" y="44" width="104" height="42" rx="4" fill="#064e3b" stroke="#059669" stroke-width="1.4" />
+
+  <!-- Gold Contact Pins (Bright & High Visibility) -->
+  <g fill="url(#goldPins)">
+    <!-- Left pin bank -->
+    <rect x="18" y="77" width="4.5" height="9" rx="1" />
+    <rect x="25" y="77" width="4.5" height="9" rx="1" />
+    <rect x="32" y="77" width="4.5" height="9" rx="1" />
+    <rect x="39" y="77" width="4.5" height="9" rx="1" />
+    <rect x="46" y="77" width="4.5" height="9" rx="1" />
+    <rect x="53" y="77" width="4.5" height="9" rx="1" />
+
+    <!-- Center Key Notch Gap (60..68) -->
+
+    <!-- Right pin bank -->
+    <rect x="70.5" y="77" width="4.5" height="9" rx="1" />
+    <rect x="77.5" y="77" width="4.5" height="9" rx="1" />
+    <rect x="84.5" y="77" width="4.5" height="9" rx="1" />
+    <rect x="91.5" y="77" width="4.5" height="9" rx="1" />
+    <rect x="98.5" y="77" width="4.5" height="9" rx="1" />
+    <rect x="105.5" y="77" width="4.5" height="9" rx="1" />
+  </g>
+
+  <!-- Key Notch Cutout -->
+  <polygon points="61,86 64,81 67,86" fill="#0369a1" />
+
+  <!-- Aluminum Heatspreader Armor -->
+  <rect x="14" y="48" width="100" height="28" fill="url(#spreaderGrad)" stroke="#475569" stroke-width="1" />
+  <line x1="16" y1="51" x2="112" y2="51" stroke="#64748b" stroke-width="0.8" opacity="0.6" />
+
+  <!-- Top RGB Lightbar (Bright & High Contrast) -->
+  <rect x="14" y="44" width="100" height="5" rx="2" fill="url(#rgbBar)" />
+
+  <!-- 4 Memory IC Chips with Cyan Borders -->
+  <rect x="20" y="52" width="16" height="18" rx="2.5" fill="#090d16" stroke="#38bdf8" stroke-width="1.2" />
+  <rect x="42" y="52" width="16" height="18" rx="2.5" fill="#090d16" stroke="#38bdf8" stroke-width="1.2" />
+  <rect x="70" y="52" width="16" height="18" rx="2.5" fill="#090d16" stroke="#38bdf8" stroke-width="1.2" />
+  <rect x="92" y="52" width="16" height="18" rx="2.5" fill="#090d16" stroke="#38bdf8" stroke-width="1.2" />
+
+  <!-- IC Chip Details: Glowing Cyan LEDs -->
+  <circle cx="28" cy="61" r="2.5" fill="#00f2fe" />
+  <circle cx="50" cy="61" r="2.5" fill="#00f2fe" />
+  <circle cx="78" cy="61" r="2.5" fill="#00f2fe" />
+  <circle cx="100" cy="61" r="2.5" fill="#00f2fe" />
+
+  <!-- 4. Massive Blazing Energy Lightning Bolt (Hero Centerpiece) -->
+  <!-- Dark Contour Rim for Unbeatable Separation -->
+  <polygon points="76,8 36,60 62,60 42,120 92,54 66,54" 
+           fill="#020617" 
+           stroke="#020617" 
+           stroke-width="8" 
+           stroke-linejoin="round" />
+
+  <!-- Electric Glowing Body -->
+  <polygon points="76,8 36,60 62,60 42,120 92,54 66,54" 
+           fill="url(#boltGrad)" 
+           stroke="#fef08a" 
+           stroke-width="2.5" 
+           stroke-linejoin="round" />
+
+  <!-- Pure White Core Energy Flash -->
+  <polygon points="74,16 41,58 63,58 48,108 85,56 66,56" 
+           fill="#ffffff" 
+           opacity="0.95" />
+
+  <!-- 5. Crisp Clean Energy Sparkles -->
+  <circle cx="22" cy="22" r="3" fill="#ffffff" />
+  <circle cx="106" cy="24" r="2.5" fill="#facc15" />
+  <circle cx="106" cy="106" r="3" fill="#38bdf8" />
+</svg>

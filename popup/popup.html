@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vãi Cả Dọn Tab - VaiClean</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header with Branding & Badges -->
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="logo-wrapper">
+          <img class="brand-logo" src="../icons/icon-48.png" width="38" height="38" alt="VaiClean Logo" />
+        </div>
+        <div class="brand-meta">
+          <div class="title-wrap">
+            <h1 class="brand-title">VAICLEAN</h1>
+            <span class="version-badge">v1.6.0</span>
+          </div>
+          <p class="brand-slogan">Cứu sống thanh RAM • Tự động gom nhóm</p>
+        </div>
+        <button id="btnOpenAISettings" class="btn-icon-head" type="button" title="Cấu hình Google Gemini AI">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l2.4 5.6L20 10l-5.6 2.4L12 18l-2.4-5.6L4 10l5.6-2.4z"/>
+            <path d="M19 16l1.2 2.8L23 20l-2.8 1.2L19 24l-1.2-2.8L15 20l2.8-1.2z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Segmented Navigation Bar -->
+    <nav class="nav-segmented" role="tablist">
+      <button id="tabNavDashboard" class="nav-segment active" type="button" role="tab" aria-selected="true">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+        </svg>
+        <span>Tổng quan</span>
+      </button>
+
+      <button id="tabNavAlerts" class="nav-segment" type="button" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span>Chú ý</span>
+        <span id="alertsBadge" class="nav-badge hidden">0</span>
+      </button>
+
+      <button id="tabNavHistory" class="nav-segment" type="button" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>Tìm &amp; Lịch sử</span>
+      </button>
+    </nav>
+
+    <!-- Main Dashboard Panel -->
+    <div id="panelDashboard" class="tab-panel">
+      <!-- RAM Gauge & Live Stats Dashboard -->
+      <section class="dashboard-section">
+        <div class="ram-meter-card">
+          <div class="meter-header">
+            <div class="meter-title-wrap">
+              <span class="pulse-status-dot"></span>
+              <span class="meter-title">ÁP LỰC BỘ NHỚ RAM</span>
+            </div>
+            <span id="ramLoadStatus" class="load-pill pill-moderate">Đang tính toán...</span>
+          </div>
+
+          <div class="progress-bar-bg">
+            <div id="ramProgressBar" class="progress-bar-fill" style="width: 45%;"></div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <span class="metric-label">Tổng tab</span>
+              <div class="metric-val-wrap">
+                <svg class="metric-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#94a3b8" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <path d="M3 9h18M9 21V9"/>
+                </svg>
+                <span id="totalTabsCount" class="metric-value">0</span>
+              </div>
+            </div>
+
+            <div class="metric-item highlight-dup">
+              <span class="metric-label">Tab trùng</span>
+              <div class="metric-val-wrap">
+                <svg class="metric-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#f43f5e" stroke-width="2">
+                  <rect x="8" y="8" width="12" height="12" rx="2"/>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                </svg>
+                <span id="duplicateTabsCount" class="metric-value text-danger">0</span>
+              </div>
+            </div>
+
+            <div class="metric-item highlight-ram">
+              <span class="metric-label">Cứu được</span>
+              <div class="metric-val-wrap">
+                <svg class="metric-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#10b981" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+                <span id="potentialRamSaved" class="metric-value text-success">0 MB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Celebration / Notification Banner -->
+      <div id="statusToast" class="status-toast hidden">
+        <svg class="toast-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        <span id="toastMessage" class="toast-text">Đã giải phóng thành công!</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <section class="actions-section">
+        <!-- Main Actions Row (2 Main Buttons Side-by-Side in 1 Row) -->
+        <div class="main-actions-row">
+          <button id="btnCleanDuplicates" class="btn btn-primary" type="button" title="Cứu RAM ngay: Đóng toàn bộ tab trùng lặp (⌘⇧C)">
+            <div class="btn-glow"></div>
+            <div class="btn-content-compact">
+              <svg class="btn-icon flash-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
+              </svg>
+              <div class="btn-texts">
+                <span class="btn-title">CỨU RAM NGAY</span>
+                <span id="btnCleanSubtext" class="btn-subtitle">Dọn tab trùng</span>
+              </div>
+            </div>
+          </button>
+
+          <button id="btnAIGroup" class="btn btn-ai" type="button" title="Gom nhóm AI: Gemini Workspaces thông minh (⌘⇧A)">
+            <div class="btn-ai-glow"></div>
+            <div class="btn-content-compact">
+              <svg class="btn-icon ai-sparkle-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l2.4 5.6L20 10l-5.6 2.4L12 18l-2.4-5.6L4 10l5.6-2.4z"/>
+                <path d="M19 16l1.2 2.8L23 20l-2.8 1.2L19 24l-1.2-2.8L15 20l2.8-1.2z"/>
+              </svg>
+              <div class="btn-texts">
+                <span class="btn-title">GOM NHÓM AI</span>
+                <span id="btnAISubtext" class="btn-subtitle">Workspaces</span>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <!-- Secondary Row -->
+        <div class="actions-row">
+          <button id="btnGroupDomains" class="btn btn-secondary" type="button" title="Gom toàn bộ tab theo tên miền">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span>Gom Domain</span>
+          </button>
+
+          <button id="btnDiscardIdle" class="btn btn-secondary" type="button" title="Đóng băng các tab nền đang rảnh để giải phóng RAM mà không đóng tab">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <span>Đóng băng tab</span>
+          </button>
+        </div>
+
+        <button id="btnToggleList" class="btn btn-secondary btn-full-width" type="button" title="Xem danh sách tab trùng">
+          <svg class="btn-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"/>
+            <line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+          <span id="btnToggleListText">Chi tiết tab trùng</span>
+        </button>
+      </section>
+
+      <!-- Detailed Duplicate Tabs List Drawer -->
+      <section id="duplicateListSection" class="details-section hidden">
+        <div class="section-title-bar">
+          <span class="section-title">DANH SÁCH TAB TRÙNG</span>
+          <span id="dupCountBadge" class="count-tag">0 tab</span>
+        </div>
+        <div id="duplicateTabsList" class="tab-items-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- Lifetime Savings & Settings Grid (Localized to Overview) -->
+      <div class="overview-settings-card">
+        <div class="lifetime-row">
+          <div class="lifetime-item">
+            <svg class="lifetime-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#10b981" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Đã cứu: <strong id="lifetimeRamSaved">0 MB</strong> RAM</span>
+          </div>
+          <button id="btnToggleSettings" class="btn-toggle-drawer" type="button" aria-expanded="false" title="Xem/ẩn các tùy chọn tự động">
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span>Tùy chọn (7)</span>
+            <svg class="drawer-chevron" viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+        </div>
+
+        <div id="settingsGridDrawer" class="settings-drawer collapsed">
+          <div class="settings-grid">
+            <label class="toggle-control" title="Tự động gom nhóm các tab cùng website theo thời gian thực">
+              <input type="checkbox" id="chkAutoGroup" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Gom nhóm Real-time</span>
+            </label>
+
+            <label class="toggle-control" title="Tab mới mở thuộc domain đã biết sẽ tự động vào nhóm AI Workspace trong 0ms không tốn quota">
+              <input type="checkbox" id="chkAIAutoRouting" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Điều hướng AI 0ms</span>
+            </label>
+
+            <label class="toggle-control" title="Chỉ mở rộng nhóm tab đang xem, tự động thu nhỏ các nhóm tab rảnh (Arc style)">
+              <input type="checkbox" id="chkAutoCollapse" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Tự thu gọn nhóm</span>
+            </label>
+
+            <label class="toggle-control" title="Bắn thông báo desktop khi phát hiện tab trùng gây hao RAM">
+              <input type="checkbox" id="chkNotifications" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Báo động desktop</span>
+            </label>
+
+            <label class="toggle-control" title="Không bao giờ đóng các tab bạn đã ghim">
+              <input type="checkbox" id="chkIgnorePinned" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Bảo vệ tab ghim</span>
+            </label>
+
+            <label class="toggle-control" title="Luôn giữ lại tab đang xem hiện tại">
+              <input type="checkbox" id="chkPreferActive" checked>
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Ưu tiên tab active</span>
+            </label>
+
+            <label class="toggle-control" title="Gom các tab đơn lẻ rải rác vào 1 nhóm duy nhất">
+              <input type="checkbox" id="chkGroupSingleTabs">
+              <span class="toggle-slider"></span>
+              <span class="toggle-label">Gom tab đơn lẻ</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attention Panel (Audible & Unread Notifications) -->
+    <div id="panelAlerts" class="tab-panel hidden">
+      <div class="attention-panel-content">
+        <!-- Audio Section -->
+        <section class="attention-section">
+          <div class="section-title-bar">
+            <div class="section-title-wrap">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#38bdf8" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              </svg>
+              <span class="section-title">TAB ĐANG PHÁT ÂM THANH</span>
+            </div>
+            <span id="audioCountBadge" class="count-tag">0 tab</span>
+          </div>
+          <div id="audioTabsContainer" class="attention-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- Notification Section -->
+        <section class="attention-section">
+          <div class="section-title-bar">
+            <div class="section-title-wrap">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#f43f5e" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <span class="section-title">TAB CÓ THÔNG BÁO CHƯA ĐỌC</span>
+            </div>
+            <span id="notifCountBadge" class="count-tag">0 tab</span>
+          </div>
+          <div id="notifTabsContainer" class="attention-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Panel: Search & Cleanup History -->
+    <div id="panelHistory" class="tab-panel hidden">
+      <div class="history-panel-content">
+        <!-- Search Bar -->
+        <div class="search-box-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#94a3b8" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input id="txtSearchTabs" type="text" class="search-input" placeholder="Tìm kiếm tab đang mở hoặc lịch sử dọn..." autocomplete="off" spellcheck="false" />
+          <button id="btnClearSearch" class="btn-clear-search hidden" type="button" title="Xóa tìm kiếm">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Sub-navigation Segments: Tab Groups vs Cleanup History -->
+        <div id="historySubNav" class="sub-nav-segments">
+          <button id="subTabOpenGroups" class="sub-nav-pill active" type="button">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="9" y1="21" x2="9" y2="9"/>
+            </svg>
+            <span>Nhóm &amp; Tab</span>
+            <span id="openGroupsCountBadge" class="count-tag">0</span>
+          </button>
+
+          <button id="subTabHistory" class="sub-nav-pill" type="button">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>Lịch sử dọn</span>
+            <span id="historyCountBadge" class="count-tag">0</span>
+          </button>
+        </div>
+
+        <!-- Live Search Results Section (Shown when query is typed) -->
+        <div id="searchResultsSection" class="search-results-section hidden">
+          <div class="section-title-bar">
+            <span class="section-title">KẾT QUẢ TÌM KIẾM</span>
+            <span id="searchResultCount" class="count-tag">0</span>
+          </div>
+          <div id="searchResultsContainer" class="search-items-container">
+            <!-- Rendered dynamically -->
+          </div>
+          <div id="searchPaginationBar" class="pagination-bar hidden"></div>
+        </div>
+
+        <!-- Open Groups & Tabs Section (Default view in Tab 3) -->
+        <div id="openGroupsSection" class="open-groups-section">
+          <div class="section-title-bar">
+            <span class="section-title">QUẢN LÝ NHÓM &amp; TAB ĐANG MỞ</span>
+            <button id="btnUngroupAll" class="btn-text-action" type="button" title="Rã tất cả các nhóm trên Chrome">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+              </svg>
+              <span>Rã mọi nhóm</span>
+            </button>
+          </div>
+          <div id="tabGroupsContainer" class="tab-groups-container">
+            <!-- Rendered dynamically -->
+          </div>
+          <div id="groupsPaginationBar" class="pagination-bar hidden"></div>
+        </div>
+
+        <!-- Cleanup History Section (Shown when subTabHistory is clicked) -->
+        <div id="cleanupHistorySection" class="cleanup-history-section hidden">
+          <div class="section-title-bar">
+            <span class="section-title">LỊCH SỬ DỌN DẸP &amp; KHÔI PHỤC</span>
+            <button id="btnClearHistory" class="btn-text-action" type="button" title="Xóa toàn bộ lịch sử">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              <span>Xóa sạch</span>
+            </button>
+          </div>
+          <div id="historyEntriesContainer" class="history-entries-container">
+            <!-- Rendered dynamically -->
+          </div>
+          <div id="historyPaginationBar" class="pagination-bar hidden"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- App Footer -->
+    <footer class="app-footer">
+      <div class="credit-row">
+        <span>VaiClean v1.6.0 • Bởi <a href="https://vaithat.com" target="_blank" rel="noopener noreferrer" class="link-developer" title="Ghé thăm trang web nhà phát triển vaithat.com">vaithat.com</a> • 100% Riêng tư</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- AI Settings Modal / Drawer -->
+  <div id="aiSettingsModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#a855f7" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+          <h3 class="modal-title">Cấu hình Google Gemini AI</h3>
+        </div>
+        <button id="btnCloseAISettings" class="btn-close-modal" type="button" title="Đóng">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-desc">
+          Kết nối khóa API Google Gemini để mở khóa khả năng phân loại ngữ cảnh công việc thông minh và tư duy gom nhóm tab (Thinking).
+        </p>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label class="form-label" for="txtGeminiApiKey">Google Gemini API Key</label>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="link-external" title="Mở trang Google AI Studio để lấy Key miễn phí">
+              <span>Lấy Key miễn phí</span>
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+          <div class="input-with-button">
+            <input type="password" id="txtGeminiApiKey" class="form-input" placeholder="Dán mã AIzaSy... tại đây" autocomplete="off" spellcheck="false" />
+            <button id="btnToggleKeyVisibility" class="btn-input-action" type="button" title="Hiện/Ẩn API Key">
+              <svg id="iconEyeOpen" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg id="iconEyeClosed" class="hidden" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+          <button id="btnValidateKey" class="btn btn-validate" type="button">
+            <svg id="iconValidateSpin" class="validate-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span id="btnValidateKeyText">Kiểm tra Key &amp; Tải Models</span>
+          </button>
+        </div>
+
+        <div id="keyValidationStatus" class="validation-status-box hidden"></div>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label class="form-label" for="selGeminiModel">Mô hình AI</label>
+            <span class="badge-dynamic">Quét động qua API</span>
+          </div>
+          <div class="select-wrapper">
+            <select id="selGeminiModel" class="form-select" disabled>
+              <option value="">-- Chưa tải mô hình (Vui lòng kiểm tra Key) --</option>
+            </select>
+            <svg class="select-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <span class="form-hint">Danh sách mô hình được quét trực tiếp từ tài khoản Google AI của bạn, không config cứng!</span>
+        </div>
+
+        <div class="form-group">
+          <label class="toggle-control">
+            <input type="checkbox" id="chkEnableAISmartGroup" checked />
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Bật phân loại ngữ cảnh thông minh</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btnSaveAISettings" class="btn btn-primary btn-save" type="button">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>Lưu cấu hình</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

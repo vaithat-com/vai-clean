@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Vãi Cả Dọn Tab - Cứu Sống Thanh RAM (VaiClean)",
+  "short_name": "VaiClean",
+  "version": "1.6.0",
+  "description": "Cứu sống thanh RAM! Tự động đóng tab trùng lặp, khôi phục lịch sử 1 chạm, tắt tiếng tab ồn ào và gom nhóm AI thông minh.",
+  "homepage_url": "https://vaithat.com",
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "storage",
+    "notifications",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "commands": {
+    "clean-duplicates": {
+      "suggested_key": {
+        "default": "Alt+Shift+C",
+        "mac": "Command+Shift+C"
+      },
+      "description": "Cứu RAM ngay: Đóng toàn bộ tab trùng lặp"
+    },
+    "ai-group-tabs": {
+      "suggested_key": {
+        "default": "Alt+Shift+A",
+        "mac": "Command+Shift+A"
+      },
+      "description": "Gom nhóm AI thông minh bằng Google Gemini"
+    }
+  },
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Vãi Cả Dọn Tab (VaiClean)",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}
